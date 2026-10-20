@@ -143,10 +143,10 @@ export class UI {
     const pause = el<HTMLDivElement>('modal-pause')
     for (const close of document.querySelectorAll<HTMLButtonElement>('[data-close-modal]')) {
       close.addEventListener('click', () => {
-        this.closeSettings()
-        this.closePause()
-        document.getElementById('modal-ios')?.classList.remove('open')
-        this.callbacks.onCloseSettings()
+        const modal = close.closest<HTMLElement>('.modal')
+        if (!modal) return
+        modal.classList.remove('open')
+        if (modal.id === 'modal-settings') this.callbacks.onCloseSettings()
       })
     }
     settings.addEventListener('click', (event) => {
