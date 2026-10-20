@@ -2873,6 +2873,7 @@ kbd {
     font-size: max(calc(var(--u) * 11), 10px);
   }
 
+  .combatant-id .combatant-rank,
   .combatant-rank,
   .battle-arena {
     display: none;
