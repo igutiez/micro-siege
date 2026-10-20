@@ -18,7 +18,7 @@ PWA instalable y offline. En Chrome/Edge pulsa **Instalar app**. En iPhone/iPad:
 - **Castillo con 9 módulos**: cimientos, muros, torres y tejado. Si destruyes el apoyo, lo que hay encima se derrumba.
 - **8 unidades** con proyectiles, roles y animaciones propias: arquera, caballero, bombardero, asedio, maga, ingeniera, bruto y ballestera.
 - **Progresión local**: monedas, madera, mejoras de módulos y unidades, copas, rangos Bronce/Plata/Oro/Leyenda, regalo diario y cuatro arenas.
-- **PWA real**: manifiesto con capturas y atajos, service worker (`micro-siege-v4`), caché offline, iconos maskable, pantalla completa y orientación bloqueada.
+- **PWA real**: manifiesto con capturas y atajos, service worker (`micro-siege-v5`), caché offline, iconos maskable, pantalla completa y orientación bloqueada.
 - **iOS + Android**: 16:9 adaptable, full-bleed en móvil horizontal, safe areas, objetivos táctiles de 44 px y controles táctiles, giro obligatorio en vertical e instalación guiada en iOS.
 - **Audio procedural** con WebAudio: cañones, impactos, derrumbes, monedas, victoria/derrota y música ambiental.
 - **Cero dependencias de runtime**: TypeScript + Canvas 2D + Vite. Todo el arte se dibuja por código.

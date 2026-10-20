@@ -2939,3 +2939,25 @@ kbd {
     min-height: 44px;
   }
 }
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .build-hint {
+    top: calc(var(--u) * 88 + env(safe-area-inset-top));
+  }
+
+  .battle-top-center {
+    top: calc(var(--u) * 16 + env(safe-area-inset-top));
+  }
+
+  .unit-row {
+    top: calc(var(--u) * 112 + env(safe-area-inset-top));
+  }
+
+  .battle-hint {
+    bottom: calc(var(--u) * 18 + env(safe-area-inset-bottom));
+  }
+
+  .toast {
+    bottom: calc(var(--u) * 26 + env(safe-area-inset-bottom));
+  }
+}

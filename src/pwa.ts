@@ -19,9 +19,12 @@ export function isIosDevice(): boolean {
 export function registerServiceWorker(): void {
   if (!import.meta.env.PROD || !('serviceWorker' in navigator)) return
   const register = (): void => {
-    void navigator.serviceWorker.register('./sw.js').catch(() => {
-      // Offline mode is an enhancement; the app remains playable without it.
-    })
+    void navigator.serviceWorker
+      .register('./sw.js', { updateViaCache: 'none' })
+      .then((registration) => registration.update())
+      .catch(() => {
+        // Offline mode is an enhancement; the app remains playable without it.
+      })
   }
   if (document.readyState === 'complete') register()
   else window.addEventListener('load', register, { once: true })
