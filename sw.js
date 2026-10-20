@@ -1,5 +1,5 @@
 /* Micro Siege offline shell. Relative to the deployed base path. */
-const CACHE = 'micro-siege-v2'
+const CACHE = 'micro-siege-v3'
 const BASE = new URL('./', self.location).pathname
 const CORE = [
   BASE,
