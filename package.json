@@ -1,0 +1,21 @@
+{
+  "name": "micro-siege",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Micro Siege — a wheeled-castle artillery duel PWA",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5273",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5274",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build:pages": "tsc --noEmit && vite build --base=/micro-siege/",
+    "deploy": "npm run build:pages && npx -y gh-pages -d dist -m \"Deploy Micro Siege\""
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4"
+  }
+}
