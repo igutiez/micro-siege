@@ -110,6 +110,7 @@ export class UI {
     power: -1,
     angle: -1,
     cooldown: -1,
+    fireLabel: 'DISPARAR',
     speed: 0,
     phase: '',
     hint: '',
@@ -404,6 +405,11 @@ export class UI {
     const fire = el<HTMLButtonElement>('btn-fire')
     fire.disabled = !ready
     fire.classList.toggle('ready', ready)
+    const fireLabel = ready ? 'DISPARAR' : 'RECARGANDO'
+    if (fireLabel !== this.lastHud.fireLabel) {
+      this.lastHud.fireLabel = fireLabel
+      el<HTMLElement>('fire-label').textContent = fireLabel
+    }
     if (speed !== this.lastHud.speed) {
       this.lastHud.speed = speed
       el<HTMLElement>('btn-speed').textContent = `×${speed}`
@@ -539,11 +545,13 @@ export class UI {
       power: -1,
       angle: -1,
       cooldown: -1,
+      fireLabel: 'DISPARAR',
       speed: 0,
       phase: '',
       hint: '',
     }
     this.lastUnitKey = ''
+    el<HTMLElement>('fire-label').textContent = 'DISPARAR'
     el<HTMLElement>('battle-hint').classList.remove('fade')
     el<HTMLButtonElement>('btn-fire').classList.remove('ready')
     el<HTMLButtonElement>('btn-speed').textContent = '×1'

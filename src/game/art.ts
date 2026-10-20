@@ -1328,7 +1328,7 @@ function drawAimPreview(ctx: CanvasRenderingContext2D, battle: Battle, time: num
   const points = battle.preview()
   if (points.length < 2) return
   ctx.save()
-  ctx.strokeStyle = 'rgba(255, 224, 138, 0.34)'
+  ctx.strokeStyle = 'rgba(255, 224, 138, 0.46)'
   ctx.lineWidth = 2
   ctx.setLineDash([1, 8])
   ctx.lineDashOffset = -time * 22
@@ -1346,10 +1346,10 @@ function drawAimPreview(ctx: CanvasRenderingContext2D, battle: Battle, time: num
     if (!point) continue
     const pulse = 0.7 + Math.sin(time * 5 - i * 0.12) * 0.25
     ctx.globalAlpha = 0.9 * pulse
-    const radius = i % 2 === 0 ? 4.4 : 3.3
-    ctx.fillStyle = 'rgba(36, 26, 19, 0.55)'
+    const radius = i % 2 === 0 ? 5 : 3.8
+    ctx.fillStyle = 'rgba(36, 26, 19, 0.6)'
     ctx.beginPath()
-    ctx.arc(point.x, point.y, radius + 1.2, 0, TAU)
+    ctx.arc(point.x, point.y, radius + 1.3, 0, TAU)
     ctx.fill()
     ctx.fillStyle = '#ffe08a'
     ctx.beginPath()
