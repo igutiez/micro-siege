@@ -457,7 +457,7 @@ export class UI {
         : result.win
           ? 'VICTORIA POR PUNTOS'
           : 'DERROTA POR PUNTOS'
-    const accuracy = result.shots > 0 ? Math.round((result.hits / result.shots) * 100) : 0
+    const accuracy = result.shots > 0 ? Math.min(100, Math.round((result.hits / result.shots) * 100)) : 0
     const stars = result.win ? (accuracy >= 55 && result.playerHp >= 55 ? 3 : 2) : 1
     el<HTMLElement>('result-stars').innerHTML = Array.from({ length: 3 }, (_, index) => {
       const active = index < stars

@@ -353,7 +353,7 @@ export class Battle {
     const applied = damageCell(target, cell, projectile.damage, events)
     this.processEvents(target.side, events)
     if (projectile.side === 'player') {
-      this.stats.hits += 1
+      if (projectile.source === 'cannon') this.stats.hits += 1
       this.stats.damage += applied
     }
     this.host.impact(projectile.x, projectile.y, projectile.damage / 28, projectile.color)
@@ -397,7 +397,7 @@ export class Battle {
     }
     if (!wasDead && unit.dead && unit.side === 'player') this.stats.unitsLost += 1
     if (projectile.side === 'player') {
-      this.stats.hits += 1
+      if (projectile.source === 'cannon') this.stats.hits += 1
       this.stats.damage += applied
     }
     if (projectile.splash > 0) {
