@@ -8,11 +8,18 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "landscape",
   "background_color": "#123a3a",
   "theme_color": "#123a3a",
-  "categories": ["games", "entertainment"],
+  "categories": [
+    "games",
+    "entertainment"
+  ],
   "icons": [
     {
       "src": "./icons/icon-192.png",
@@ -31,6 +38,62 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshots/wide-home.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Fortaleza móvil y taller de Micro Siege"
+    },
+    {
+      "src": "./screenshots/wide-build.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Construye muros, torres y tejados"
+    },
+    {
+      "src": "./screenshots/wide-battle.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Duelo de artillería con viento y castillos"
+    },
+    {
+      "src": "./screenshots/narrow-home.webp",
+      "sizes": "844x390",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Micro Siege en horizontal en el móvil"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Jugar ahora",
+      "short_name": "Jugar",
+      "url": "./?screen=play",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Mi castillo",
+      "short_name": "Castillo",
+      "url": "./?screen=build",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

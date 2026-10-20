@@ -211,7 +211,7 @@ export function castleWidth(): number {
 export function cannonPosition(castle: Castle): { x: number; y: number } {
   return {
     x: castle.x + CASTLE_W / 2,
-    y: castle.y - 16 - (castle.side === 'player' ? 0 : 0),
+    y: castle.y - 6,
   }
 }
 

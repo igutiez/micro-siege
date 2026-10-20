@@ -1,6 +1,7 @@
 import {
   MODULES,
   MODULE_BY_ID,
+  RANKS,
   UNITS,
   UNIT_BY_ID,
 } from './config.ts'
@@ -16,7 +17,7 @@ import {
   unitUpgradeCost,
 } from './profile.ts'
 import { formatClock } from './physics.ts'
-import { drawUnitPortrait } from './art.ts'
+import { drawModulePortrait, drawUnitPortrait } from './art.ts'
 import type { Battle } from './battle.ts'
 import type { BattleResult, ModuleId, Profile, Settings, UnitId } from './types.ts'
 
@@ -92,6 +93,10 @@ function moduleGlyph(id: ModuleId): string {
   return '▦'
 }
 
+function moduleThumb(id: ModuleId): string {
+  return `<span class="module-thumb"><img src="${drawModulePortrait(id)}" alt="" /></span>`
+}
+
 function costLine(wood: number, coins: number): string {
   return `<span class="cost">${icon('wood')} ${formatNumber(wood)} · ${icon('coin')} ${formatNumber(coins)}</span>`
 }
@@ -125,6 +130,8 @@ export class UI {
     el<HTMLButtonElement>('btn-play').addEventListener('click', () => this.callbacks.onPlay())
     el<HTMLButtonElement>('btn-build-home').addEventListener('click', () => this.callbacks.onOpenBuild())
     el<HTMLButtonElement>('btn-home-settings').addEventListener('click', () => this.callbacks.onOpenSettings())
+    el<HTMLButtonElement>('btn-help').addEventListener('click', () => this.openHelp())
+    el<HTMLButtonElement>('btn-help-settings').addEventListener('click', () => this.openHelp())
     el<HTMLButtonElement>('btn-build-back').addEventListener('click', () => this.callbacks.onHome())
     el<HTMLButtonElement>('btn-battle').addEventListener('click', () => this.callbacks.onBattle())
     el<HTMLButtonElement>('btn-fire').addEventListener('click', () => this.callbacks.onFire())
@@ -158,6 +165,17 @@ export class UI {
     pause.addEventListener('click', (event) => {
       if (event.target === pause) this.callbacks.onResume()
     })
+    const help = el<HTMLDivElement>('modal-help')
+    help.addEventListener('click', (event) => {
+      if (event.target === help) this.closeHelp()
+    })
+    const confirm = el<HTMLDivElement>('modal-confirm')
+    confirm.addEventListener('click', (event) => {
+      if (event.target === confirm) this.closeConfirm()
+    })
+    for (const eventName of ['online', 'offline'] as const) {
+      window.addEventListener(eventName, () => this.renderConnection())
+    }
 
     for (const tab of document.querySelectorAll<HTMLButtonElement>('.sheet-tab')) {
       tab.addEventListener('click', () => {
@@ -202,10 +220,12 @@ export class UI {
       })
     }
 
-    el<HTMLButtonElement>('btn-reset').addEventListener('click', () => {
-      if (window.confirm('¿Borrar el progreso, las monedas y los upgrades de este dispositivo?')) {
-        this.callbacks.onReset()
-      }
+    el<HTMLButtonElement>('btn-reset').addEventListener('click', () => this.openConfirm())
+    el<HTMLButtonElement>('btn-confirm-cancel').addEventListener('click', () => this.closeConfirm())
+    el<HTMLButtonElement>('btn-confirm-reset').addEventListener('click', () => {
+      this.closeConfirm()
+      this.closeSettings()
+      this.callbacks.onReset()
     })
   }
 
@@ -227,6 +247,17 @@ export class UI {
     const rank = rankFor(profile.trophies)
     el<HTMLDivElement>('home-rank').className = `rank-chip ${rank.id}`
     el<HTMLDivElement>('home-rank').innerHTML = `${icon('crown')} ${rank.name} · ${formatNumber(profile.trophies)}`
+    const next = RANKS.find((candidate) => candidate.min > profile.trophies)
+    const progress = next
+      ? Math.max(0, Math.min(100, ((profile.trophies - rank.min) / (next.min - rank.min)) * 100))
+      : 100
+    el<HTMLElement>('home-rank-fill').style.width = `${progress}%`
+    el<HTMLElement>('home-rank-progress').title = next
+      ? `${Math.max(0, next.min - profile.trophies)} copas para ${next.name}`
+      : 'Rango máximo'
+    el<HTMLElement>('home-rank-next').textContent = next
+      ? `${Math.max(0, next.min - profile.trophies)} PARA ${next.name}`
+      : 'RANGO MÁXIMO'
     const daily = dailyAvailable(profile)
     el<HTMLDivElement>('home-stats').innerHTML = [
       `<span class="stat-pill">${profile.wins} V · ${profile.losses} D</span>`,
@@ -236,6 +267,31 @@ export class UI {
         : '',
     ].join('')
     this.setInstallVisible(this.installAvailable)
+    this.renderConnection()
+  }
+
+  renderConnection(): void {
+    const online = navigator.onLine
+    const note = document.getElementById('connection-note')
+    if (note) note.textContent = online ? 'PWA · HECHA PARA iOS Y ANDROID' : 'SIN CONEXIÓN · MODO OFFLINE'
+    const status = document.getElementById('settings-connection')
+    if (status) status.textContent = online ? 'CONECTADO · PWA LISTA' : 'SIN CONEXIÓN · MODO OFFLINE'
+  }
+
+  openHelp(): void {
+    el<HTMLDivElement>('modal-help').classList.add('open')
+  }
+
+  closeHelp(): void {
+    el<HTMLDivElement>('modal-help').classList.remove('open')
+  }
+
+  openConfirm(): void {
+    el<HTMLDivElement>('modal-confirm').classList.add('open')
+  }
+
+  closeConfirm(): void {
+    el<HTMLDivElement>('modal-confirm').classList.remove('open')
   }
 
   renderWallet(profile: Profile): void {
@@ -250,9 +306,18 @@ export class UI {
       tabButton.classList.toggle('active', tabButton.dataset.tab === tab)
     }
     const hint = el<HTMLElement>('build-hint')
-    if (tab === 'build') hint.textContent = 'Toca una ranura punteada para construir.'
-    else if (tab === 'upgrade') hint.textContent = 'Toca un módulo construido para mejorarlo.'
-    else hint.textContent = 'Elige una unidad y colócala en una ranura.'
+    const tip = el<HTMLElement>('build-tip')
+    if (tab === 'build') {
+      hint.textContent = 'Toca una ranura punteada para construir.'
+      tip.innerHTML = `<span class="tip-mark">✦</span> Los muros sostienen las torres: construye de abajo arriba.`
+    } else if (tab === 'upgrade') {
+      hint.textContent = 'Toca un módulo construido para mejorarlo.'
+      tip.innerHTML = `<span class="tip-mark">✦</span> Mejorar un módulo también afila el daño de tu cañón.`
+    } else {
+      hint.textContent = 'Elige una unidad y colócala en una ranura.'
+      tip.innerHTML = `<span class="tip-mark">✦</span> La ingeniera repara; el bombardero abre boquetes.`
+    }
+    tip.classList.toggle('hidden', tab === 'units')
 
     const body = el<HTMLDivElement>('build-sheet-body')
     if (tab === 'units') {
@@ -274,7 +339,7 @@ export class UI {
         .map((module) => {
           const cost = moduleBuildCost(module.id)
           return `<button class="build-card" data-action="select" data-module="${module.id}">
-            <span class="slot-disc">${moduleGlyph(module.id)}</span>
+            ${moduleThumb(module.id)}
             <span class="build-card-copy"><b>${module.name}</b><p>${costLine(cost.wood, cost.coins)}</p></span>
           </button>`
         })
@@ -297,7 +362,7 @@ export class UI {
         const maxed = level >= 5
         const cost = moduleUpgradeCost(module.id, level)
         return `<button class="build-card" data-action="select" data-module="${module.id}">
-          <span class="slot-disc">${moduleGlyph(module.id)}</span>
+          ${moduleThumb(module.id)}
           <span class="build-card-copy"><b>${module.name} · Nv ${level}</b><p>${maxed ? 'Nivel máximo' : costLine(cost.wood, cost.coins)}</p></span>
         </button>`
       })
@@ -310,7 +375,7 @@ export class UI {
     const supported = canBuildModule(profile, id)
     const affordable = profile.wood >= cost.wood && profile.coins >= cost.coins
     return `<div class="build-card build-detail">
-      <span class="slot-disc">${moduleGlyph(id)}</span>
+      ${moduleThumb(id)}
       <span class="build-card-copy"><b>${module.name}</b><p>${costLine(cost.wood, cost.coins)} · ${module.hp} PV</p></span>
       <button class="btn btn-green" data-action="build" data-module="${id}" ${!supported || !affordable ? 'disabled' : ''}>CONSTRUIR</button>
     </div>
@@ -325,7 +390,7 @@ export class UI {
     const maxed = level >= 5
     const affordable = profile.wood >= cost.wood && profile.coins >= cost.coins
     return `<div class="build-card build-detail">
-      <span class="slot-disc">${moduleGlyph(id)}</span>
+      ${moduleThumb(id)}
       <span class="build-card-copy"><b>${module.name} · Nv ${level}</b><p>${maxed ? 'Nivel máximo' : `${costLine(cost.wood, cost.coins)} · ${module.hp + module.hpPerLevel * level} PV`}</p></span>
       <button class="btn btn-gold" data-action="upgrade" data-module="${id}" ${maxed || !affordable ? 'disabled' : ''}>${maxed ? 'MÁXIMO' : 'MEJORAR'}</button>
     </div>`
@@ -349,9 +414,11 @@ export class UI {
           <b>${unit.name}</b><small>${icon('coin')} ${formatNumber(unit.unlock)}</small>
         </button>`
       }
+      const pips = Array.from({ length: 5 }, (_, index) => `<i class="${index < state.level ? 'on' : ''}"></i>`).join('')
       return `<button class="unit-card ${equipped ? 'selected' : ''}" data-action="equip" data-unit="${unit.id}">
         <img class="unit-mini" src="${drawUnitPortrait(unit.id, 'player')}" alt="" />
         <b>${unit.name}</b><small>Nv ${state.level} · ${unit.role}</small>
+        <span class="unit-pips" aria-label="Nivel ${state.level}">${pips}</span>
         <span class="unit-card-actions">
           <span class="unit-upgrade" data-action="unit-upgrade" data-unit="${unit.id}">${icon('coin')} ${formatNumber(unitUpgradeCost(unit.id, state.level))}</span>
         </span>
@@ -388,18 +455,19 @@ export class UI {
     if (windKey !== this.lastHud.wind) {
       this.lastHud.wind = windKey
       el<HTMLElement>('wind-value').textContent = String(wind)
-      const arrow = el<HTMLElement>('wind-arrow')
-      arrow.textContent = battle.wind >= 0 ? '→' : '←'
+      el<HTMLElement>('wind-needle').style.transform = `rotate(${battle.wind >= 0 ? 90 : -90}deg)`
     }
     const power = Math.round(battle.aim.power * 100)
     if (power !== this.lastHud.power) {
       this.lastHud.power = power
       el<HTMLElement>('aim-power').textContent = `${power}%`
+      el<HTMLElement>('power-fill').style.width = `${power}%`
     }
     const angle = Math.round(battle.aim.angle)
     if (angle !== this.lastHud.angle) {
       this.lastHud.angle = angle
       el<HTMLElement>('aim-angle').textContent = `${angle}°`
+      el<HTMLElement>('angle-fill').style.width = `${Math.round((angle / 82) * 100)}%`
     }
     const ready = battle.phase === 'fight' && battle.cooldown <= 0
     const fire = el<HTMLButtonElement>('btn-fire')
@@ -410,6 +478,9 @@ export class UI {
       this.lastHud.fireLabel = fireLabel
       el<HTMLElement>('fire-label').textContent = fireLabel
     }
+    const reload = battle.phase === 'fight' ? Math.max(0, 1 - battle.cooldown / 2.05) : 0
+    el<HTMLElement>('fire-reload').style.setProperty('--reload', `${Math.round(reload * 360)}deg`)
+    el<HTMLElement>('fire-reload').classList.toggle('full', ready)
     if (speed !== this.lastHud.speed) {
       this.lastHud.speed = speed
       el<HTMLElement>('btn-speed').textContent = `×${speed}`
@@ -432,6 +503,7 @@ export class UI {
         const hp = Math.max(0, Math.round((unit.hp / unit.maxHp) * 100))
         return `<div class="unit-chip ${side} ${unit.dead ? 'dead' : ''}" title="${def.name}">
           <img src="${drawUnitPortrait(unit.kind, side)}" alt="${def.name}" />
+          <span class="unit-level">${unit.level}</span>
           <span class="unit-hp"><i style="width:${hp}%"></i></span>
         </div>`
       })
@@ -441,13 +513,22 @@ export class UI {
   setBattleNames(battle: Battle): void {
     el<HTMLElement>('player-name').textContent = battle.player.name
     el<HTMLElement>('enemy-name').textContent = battle.enemy.name
+    el<HTMLElement>('battle-arena').textContent = battle.arena.name
     el<HTMLElement>('player-trophies').innerHTML = `${icon('trophy')} ${formatNumber(battle.player.trophies)}`
     el<HTMLElement>('enemy-trophies').innerHTML = `${icon('trophy')} ${formatNumber(battle.enemy.trophies)}`
+    el<HTMLElement>('player-rank').textContent = rankFor(battle.player.trophies).name
+    el<HTMLElement>('enemy-rank').textContent = rankFor(battle.enemy.trophies).name
   }
 
   showResult(result: BattleResult, profile: Profile): void {
     const card = document.querySelector<HTMLElement>('.result-card')
     card?.classList.toggle('defeat', !result.win)
+    const rank = rankFor(profile.trophies)
+    const next = RANKS.find((candidate) => candidate.min > profile.trophies)
+    const progress = next ? Math.max(0, Math.min(100, ((profile.trophies - rank.min) / (next.min - rank.min)) * 100)) : 100
+    const crest = el<HTMLElement>('result-crest')
+    crest.className = `result-crest ${result.win ? 'win' : 'loss'}`
+    crest.innerHTML = result.win ? icon('crown') : icon('shield')
     el<HTMLElement>('result-kicker').textContent = result.win ? 'VICTORIA' : 'DERROTA'
     el<HTMLElement>('result-title').textContent =
       result.reason === 'core'
@@ -468,6 +549,18 @@ export class UI {
       <span class="reward-chip coin">${icon('coin')} +${formatNumber(result.coins)}</span>
       <span class="reward-chip wood">${icon('wood')} +${formatNumber(result.wood)}</span>
       <span class="reward-chip trophy">${icon('trophy')} ${trophyText}</span>`
+    el<HTMLElement>('result-note').textContent =
+      result.reason === 'core'
+        ? result.win
+          ? 'El núcleo rival se apagó. La fortaleza es tuya.'
+          : 'Tu núcleo cedió. Revisa la base y vuelve con más hierro.'
+        : result.win
+          ? `Resististe con ${result.playerHp}% de estructura y ganaste por puntos.`
+          : `El rival aguantó mejor: ${result.enemyHp}% frente a ${result.playerHp}%.`
+    el<HTMLElement>('result-rank').innerHTML = `
+      <span class="result-rank-name">${rank.name}</span>
+      <span class="result-rank-track"><i style="width:${progress}%"></i></span>
+      <span class="result-rank-next">${next ? `${Math.max(0, next.min - profile.trophies)} PARA ${next.name}` : 'RANGO MÁXIMO'}</span>`
     el<HTMLElement>('result-stats').innerHTML = `
       <div class="result-stat"><span>DAÑO</span><b>${formatNumber(result.damage)}</b></div>
       <div class="result-stat"><span>PRECISIÓN</span><b>${accuracy}%</b></div>
@@ -503,6 +596,7 @@ export class UI {
     el<HTMLInputElement>('set-music').checked = profile.settings.music
     el<HTMLInputElement>('set-motion').checked = profile.settings.reducedMotion
     el<HTMLButtonElement>('btn-install-settings').classList.toggle('hidden', !this.installAvailable)
+    this.renderConnection()
     el<HTMLDivElement>('modal-settings').classList.add('open')
   }
 
@@ -555,6 +649,9 @@ export class UI {
     el<HTMLElement>('battle-hint').classList.remove('fade')
     el<HTMLButtonElement>('btn-fire').classList.remove('ready')
     el<HTMLButtonElement>('btn-speed').textContent = '×1'
+    el<HTMLElement>('power-fill').style.width = '65%'
+    el<HTMLElement>('angle-fill').style.width = '55%'
+    el<HTMLElement>('fire-reload').style.setProperty('--reload', '0deg')
   }
 
   setSpeed(speed: number): void {

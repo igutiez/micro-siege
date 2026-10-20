@@ -34,7 +34,7 @@ import {
   drawParticles,
   drawResultOverlay,
 } from './art.ts'
-import { randomRange, randomInt } from './physics.ts'
+import { randomRange, randomInt, TAU } from './physics.ts'
 import { createInstallController, type InstallController } from '../pwa.ts'
 import type {
   BattleHost,
@@ -178,7 +178,13 @@ export class Game implements BattleHost {
       updateInstall()
     })
     updateInstall()
+    this.applyArenaTheme()
     this.ui.bootDone()
+    const params = new URLSearchParams(window.location.search)
+    const launch = params.get('screen')
+    if (launch === 'build') this.startBuild()
+    else if (launch === 'play') this.startBattle()
+    if (launch) window.history.replaceState(null, '', window.location.pathname + window.location.hash)
     this.lastFrame = performance.now()
     requestAnimationFrame(this.loop)
   }
@@ -187,6 +193,11 @@ export class Game implements BattleHost {
     const standalone = window.matchMedia?.('(display-mode: standalone)').matches ?? false
     const iosStandalone = (navigator as Navigator & { standalone?: boolean }).standalone === true
     return standalone || iosStandalone
+  }
+
+  private applyArenaTheme(): void {
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+    if (meta) meta.content = arenaFor(this.profile.trophies).palette.skyTop
   }
 
   private applyMotionSetting(): void {
@@ -226,7 +237,7 @@ export class Game implements BattleHost {
       name: 'TÚ',
       trophies: this.profile.trophies,
       palette: arena.palette,
-      scale: 1.15,
+      scale: 1.25,
     })
   }
 
@@ -235,6 +246,7 @@ export class Game implements BattleHost {
   }
 
   private startHome(): void {
+    this.applyArenaTheme()
     this.battle = null
     this.paused = false
     this.screen = 'home'
@@ -245,6 +257,7 @@ export class Game implements BattleHost {
   }
 
   private startBuild(): void {
+    this.applyArenaTheme()
     this.battle = null
     this.paused = false
     this.screen = 'build'
@@ -260,6 +273,7 @@ export class Game implements BattleHost {
   }
 
   private startBattle(): void {
+    this.applyArenaTheme()
     this.audio.unlock()
     this.battle = new Battle(this.profile, this)
     this.battle.start()
@@ -713,12 +727,18 @@ export class Game implements BattleHost {
       drawParticles(ctx, this.particles)
       drawFloatTexts(ctx, this.texts)
     } else if (this.screen === 'build' && this.buildCastle) {
-      drawBuildScene(ctx, this.time, this.buildCastle, {
-        showSlots: true,
-        selected: this.selectedModule,
-        hover: this.hoverModule,
-        tab: this.tab,
-      })
+      drawBuildScene(
+        ctx,
+        this.time,
+        this.buildCastle,
+        {
+          showSlots: true,
+          selected: this.selectedModule,
+          hover: this.hoverModule,
+          tab: this.tab,
+        },
+        arenaFor(this.profile.trophies).id,
+      )
       drawParticles(ctx, this.particles)
       drawFloatTexts(ctx, this.texts)
     } else if ((this.screen === 'battle' || this.screen === 'result') && this.battle) {
@@ -964,6 +984,45 @@ export class Game implements BattleHost {
     this.paused = true
     this.ui.showResult(result, this.profile)
     this.ui.showScreen('result')
-    this.audio.play('coin')
+    this.applyArenaTheme()
+    this.audio.play(result.win ? 'win' : 'lose')
+    if (result.win) {
+      const colors = ['#ffe08a', '#ffb09a', '#8ecae6', '#d7f7b4', '#fff3d6', '#c63b32']
+      for (let index = 0; index < 72; index += 1) {
+        this.addParticle({
+          kind: 'confetti',
+          x: randomRange(160, WORLD.w - 160),
+          y: randomRange(-180, -20),
+          vx: randomRange(-42, 42),
+          vy: randomRange(45, 125),
+          size: randomRange(2.5, 5.5),
+          life: randomRange(2.8, 4.5),
+          maxLife: 4.5,
+          color: colors[index % colors.length] ?? '#ffe08a',
+          gravity: randomRange(55, 105),
+          rotation: randomRange(0, TAU),
+          spin: randomRange(-5, 5),
+          alpha: 1,
+        })
+      }
+    } else {
+      for (let index = 0; index < 18; index += 1) {
+        this.addParticle({
+          kind: index % 2 === 0 ? 'smoke' : 'ember',
+          x: randomRange(480, 800),
+          y: randomRange(330, 480),
+          vx: randomRange(-18, 18),
+          vy: randomRange(-34, -10),
+          size: randomRange(3, 8),
+          life: randomRange(1.6, 3),
+          maxLife: 3,
+          color: index % 2 === 0 ? '#6b5c4c' : '#d87545',
+          gravity: -12,
+          rotation: 0,
+          spin: 0,
+          alpha: 0.5,
+        })
+      }
+    }
   }
 }

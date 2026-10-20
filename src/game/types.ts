@@ -23,7 +23,7 @@ export type ModuleId =
   | 'roof'
 export type CellKind = 'empty' | 'room' | 'wall' | 'tower' | 'base' | 'roof' | 'core' | 'rubble'
 export type ProjectileKind = 'cannon' | 'arrow' | 'bomb' | 'orb' | 'boulder' | 'bolt'
-export type ParticleKind = 'dust' | 'smoke' | 'spark' | 'debris' | 'ember' | 'ring' | 'star' | 'leaf'
+export type ParticleKind = 'dust' | 'smoke' | 'spark' | 'debris' | 'ember' | 'ring' | 'star' | 'leaf' | 'confetti'
 
 export interface Vec2 {
   x: number
