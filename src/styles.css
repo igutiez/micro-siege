@@ -2095,28 +2095,6 @@ button:focus-visible,
   }
 }
 
-.unit-pips {
-  position: absolute;
-  left: calc(var(--u) * 6);
-  bottom: calc(var(--u) * 6);
-  display: flex;
-  gap: calc(var(--u) * 2);
-}
-
-.unit-pips i {
-  width: calc(var(--u) * 4);
-  height: calc(var(--u) * 4);
-  border-radius: 50%;
-  border: calc(var(--u) * 1) solid rgba(255, 243, 214, 0.25);
-  background: rgba(0, 0, 0, 0.25);
-}
-
-.unit-pips i.on {
-  border-color: var(--gold);
-  background: linear-gradient(180deg, #fff1c9, var(--gold));
-  box-shadow: 0 0 calc(var(--u) * 3) rgba(255, 201, 74, 0.4);
-}
-
 @media (min-width: 1000px) {
   .unit-grid {
     grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -2684,13 +2662,6 @@ kbd {
 }
 
 
-.build-summary b {
-  color: var(--gold);
-  font-family: var(--font-display);
-  font-size: calc(var(--u) * 13);
-  font-weight: 400;
-  letter-spacing: 0.04em;
-}
 
 
 .hud-top .vs-mark {
@@ -2836,5 +2807,135 @@ kbd {
 @media (orientation: landscape) and (max-height: 600px) {
   .home-bottom {
     padding-bottom: max(calc(var(--u) * 30), env(safe-area-inset-bottom));
+  }
+}
+
+/* ── mobile fit: short landscape phones ────────────────────────────────
+   The playfield is full-bleed and crops vertically, while the interface
+   keeps legible type, thumb-sized controls and a compact home column. */
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .hero-copy {
+    top: 19%;
+  }
+
+  .game-title {
+    font-size: calc(var(--u) * 104);
+  }
+
+  .tagline {
+    margin-bottom: calc(var(--u) * 14);
+  }
+
+  .hero-meta {
+    margin-top: calc(var(--u) * 5);
+  }
+
+  .rank-next,
+  .home-note {
+    display: none;
+  }
+
+  .home-bottom {
+    padding-top: calc(var(--u) * 10);
+  }
+
+  .home-stats .btn {
+    min-height: 30px;
+  }
+
+  /* Icon buttons become real thumb targets; 44 CSS px regardless of art scale. */
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .sheet-tab {
+    min-height: 32px;
+    font-size: max(calc(var(--u) * 16), 12px);
+    display: flex;
+    align-items: center;
+  }
+
+  .unit-slot {
+    min-height: 28px;
+  }
+
+  .build-battle {
+    height: max(calc(var(--u) * 52), 44px);
+  }
+
+  .build-hint {
+    font-size: max(calc(var(--u) * 11), 10px);
+  }
+
+  .combatant-rank,
+  .battle-arena {
+    display: none;
+  }
+
+  .hud-top {
+    padding-top: max(calc(var(--u) * 16), env(safe-area-inset-top));
+  }
+
+  .unit-row {
+    top: calc(var(--u) * 112);
+  }
+
+  .timer {
+    font-size: max(calc(var(--u) * 18), 14px);
+    padding: calc(var(--u) * 5) max(calc(var(--u) * 14), 12px);
+  }
+
+  .wind-label {
+    display: none;
+  }
+
+  .wind-pill {
+    min-height: 24px;
+    padding: calc(var(--u) * 3) max(calc(var(--u) * 8), 8px);
+    font-size: max(calc(var(--u) * 10), 10px);
+  }
+
+  .wind-dial {
+    width: 22px;
+    height: 22px;
+  }
+
+  #wind-needle {
+    height: 8px;
+    margin-top: -8px;
+  }
+
+  .aim-stat {
+    min-width: max(calc(var(--u) * 98), 80px);
+    padding: calc(var(--u) * 7) max(calc(var(--u) * 12), 8px) calc(var(--u) * 9);
+  }
+
+  .aim-stat span {
+    font-size: max(calc(var(--u) * 8.5), 8px);
+  }
+
+  .aim-stat b {
+    font-size: max(calc(var(--u) * 22), 16px);
+  }
+
+  .stat-gauge {
+    height: max(calc(var(--u) * 3.5), 4px);
+  }
+
+  .battle-hint {
+    font-size: max(calc(var(--u) * 12), 10px);
+    bottom: calc(var(--u) * 18);
+  }
+
+  .result-actions .btn,
+  .pause-card .btn,
+  .help-close {
+    min-height: 44px;
   }
 }

@@ -2947,13 +2947,38 @@ function drawIntro(ctx: CanvasRenderingContext2D, battle: Battle, time: number):
   drawSmallText(ctx, `${battle.player.trophies} COPAS`, 250 - slide * 0.4, 340, 13, GOLD)
   drawSmallText(ctx, `${battle.enemy.trophies} COPAS`, WORLD.w - 250 + slide * 0.4, 340, 13, GOLD)
   ctx.save()
-  ctx.globalAlpha = 0.16
+  ctx.beginPath()
+  ctx.moveTo(-100, 208)
+  ctx.lineTo(560 + slide, 208)
+  ctx.lineTo(500 + slide, 420)
+  ctx.lineTo(-100, 420)
+  ctx.closePath()
+  ctx.clip()
+  ctx.globalAlpha = 0.11
   ctx.strokeStyle = '#fff3d6'
   ctx.lineWidth = 11
-  for (let i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 9; i += 1) {
     ctx.beginPath()
-    ctx.moveTo(-80 + i * 90, 420)
-    ctx.lineTo(80 + i * 90, 208)
+    ctx.moveTo(-100 + i * 90, 440)
+    ctx.lineTo(120 + i * 90, 188)
+    ctx.stroke()
+  }
+  ctx.restore()
+  ctx.save()
+  ctx.beginPath()
+  ctx.moveTo(WORLD.w + 100, 208)
+  ctx.lineTo(WORLD.w - 560 - slide, 208)
+  ctx.lineTo(WORLD.w - 500 - slide, 420)
+  ctx.lineTo(WORLD.w + 100, 420)
+  ctx.closePath()
+  ctx.clip()
+  ctx.globalAlpha = 0.11
+  ctx.strokeStyle = '#fff3d6'
+  ctx.lineWidth = 11
+  for (let i = 0; i < 9; i += 1) {
+    ctx.beginPath()
+    ctx.moveTo(WORLD.w + 100 - i * 90, 440)
+    ctx.lineTo(WORLD.w - 120 - i * 90, 188)
     ctx.stroke()
   }
   ctx.restore()
