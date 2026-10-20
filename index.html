@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#123a3a" />
+    <meta name="description" content="Micro Siege: construye tu castillo con ruedas, apunta con el viento y derriba al rival. PWA offline para iOS y Android." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Micro Siege" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <title>Micro Siege — Asedio de castillos</title>
+    <script type="module" crossorigin src="/micro-siege/assets/index-vq263sxg.js"></script>
+    <link rel="stylesheet" crossorigin href="/micro-siege/assets/index-BNUohMW1.css">
+  </head>
+  <body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="i-coin" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" fill="currentColor" />
+        <circle cx="12" cy="12" r="6.2" fill="none" stroke="rgba(36,26,19,.45)" stroke-width="1.6" />
+        <path d="M12 6.8l1.35 2.9 3.15.4-2.35 2.2.65 3.1L12 13.9l-2.8 1.5.65-3.1-2.35-2.2 3.15-.4z" fill="rgba(36,26,19,.55)" />
+      </symbol>
+      <symbol id="i-wood" viewBox="0 0 24 24">
+        <rect x="3" y="8" width="18" height="8" rx="4" fill="currentColor" />
+        <ellipse cx="18.6" cy="12" rx="2.2" ry="3.7" fill="rgba(36,26,19,.28)" />
+        <circle cx="18.6" cy="12" r="1.1" fill="none" stroke="rgba(36,26,19,.35)" stroke-width=".8" />
+        <path d="M6 10.2h7M6 13.8h5" stroke="rgba(36,26,19,.25)" stroke-width="1.2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-crown" viewBox="0 0 24 24">
+        <path d="M3 8l4 3 5-6 5 6 4-3-2 11H5z" fill="currentColor" />
+        <path d="M5 20h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-trophy" viewBox="0 0 24 24">
+        <path d="M7 4h10v4a5 5 0 0 1-10 0z" fill="currentColor" />
+        <path d="M7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M12 13v5M8 21h8M9 18h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24">
+        <path d="M12 3.2l1.2 2.1 2.4-.5.7 2.3 2.2 1.1-1 2.2 1 2.2-2.2 1.1-.7 2.3-2.4-.5L12 20.8l-1.2-2.1-2.4.5-.7-2.3-2.2-1.1 1-2.2-1-2.2 2.2-1.1.7-2.3 2.4.5z" fill="currentColor" />
+        <circle cx="12" cy="12" r="3.1" fill="#123a3a" />
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+      </symbol>
+      <symbol id="i-home" viewBox="0 0 24 24">
+        <path d="M3.5 11L12 4l8.5 7v9h-6v-5h-5v5h-6z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24">
+        <path d="M7 4.5l12 7.5-12 7.5z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24">
+        <rect x="6.5" y="4" width="4" height="16" rx="1.4" fill="currentColor" />
+        <rect x="13.5" y="4" width="4" height="16" rx="1.4" fill="currentColor" />
+      </symbol>
+      <symbol id="i-sound" viewBox="0 0 24 24">
+        <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" />
+        <path d="M16 8.5a5 5 0 0 1 0 7M18.7 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-music" viewBox="0 0 24 24">
+        <path d="M9 18.2V6.5l10-2v11.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" />
+        <circle cx="6.7" cy="18.2" r="2.7" fill="currentColor" />
+        <circle cx="16.7" cy="15.7" r="2.7" fill="currentColor" />
+      </symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24">
+        <rect x="5" y="10" width="14" height="10" rx="2.4" fill="currentColor" />
+        <path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.2" />
+        <circle cx="12" cy="15" r="1.4" fill="#123a3a" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-rotate" viewBox="0 0 24 24">
+        <rect x="7" y="2.8" width="10" height="18.4" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M4 8a8 8 0 0 1 13.5-2.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <path d="M18 2.5V6h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-install" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24">
+        <path d="M13.5 2L4 14h6l-1 8 9-12h-6z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24">
+        <path d="M12 3l7 2.5v5.7c0 4.4-3 7.5-7 9.8-4-2.3-7-5.4-7-9.8V5.5z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-fire" viewBox="0 0 24 24">
+        <path d="M12 2c1.5 4 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3.5 2.5-5C9 8.5 9.4 10 10.5 10c1.3 0 1.8-2.7 1.5-8z" fill="currentColor" />
+      </symbol>
+      <symbol id="i-flag" viewBox="0 0 24 24">
+        <path d="M6 3v18M6 4h12l-2.2 4L18 12H6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+    </svg>
+
+    <div id="page-bg" aria-hidden="true"></div>
+
+    <main id="stage">
+      <canvas id="game" role="img" aria-label="Arena de Micro Siege"></canvas>
+
+      <div id="ui">
+        <section id="screen-home" class="screen" data-screen="home">
+          <div class="home-top">
+            <div class="brand-mini">
+              <span class="brand-castle" aria-hidden="true">♜</span>
+              <span>MICRO SIEGE</span>
+            </div>
+            <div class="home-top-right">
+              <div class="wallet" data-wallet="home"></div>
+              <button class="icon-btn" id="btn-home-settings" aria-label="Ajustes">
+                <svg class="icon"><use href="#i-gear" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> ASEDIO DE CASTILLOS</p>
+            <h1 class="game-title"><span>MICRO</span><span>SIEGE</span></h1>
+            <p class="tagline">Construye. Apunta. Derriba.</p>
+            <div class="hero-actions">
+              <button id="btn-play" class="btn btn-gold btn-xl">
+                JUGAR
+                <svg class="icon"><use href="#i-arrow" /></svg>
+              </button>
+              <button id="btn-build-home" class="btn btn-wood">MI CASTILLO</button>
+            </div>
+            <div class="hero-meta">
+              <div id="home-rank" class="rank-chip"></div>
+              <button id="btn-install" class="btn btn-install hidden">
+                <svg class="icon"><use href="#i-install" /></svg>
+                INSTALAR APP
+              </button>
+            </div>
+          </div>
+
+          <div class="home-bottom">
+            <div class="home-stats" id="home-stats"></div>
+            <p class="home-note">SIN CONEXIÓN · PWA · HECHA PARA iOS Y ANDROID</p>
+          </div>
+        </section>
+
+        <section id="screen-build" class="screen" data-screen="build">
+          <header class="build-top">
+            <button class="icon-btn" id="btn-build-back" aria-label="Volver">
+              <svg class="icon"><use href="#i-home" /></svg>
+            </button>
+            <div class="build-heading">
+              <p>TU FORTALEZA</p>
+              <h2 id="build-rank-name">BRONCE</h2>
+            </div>
+            <div class="wallet" data-wallet="build"></div>
+          </header>
+
+          <div class="build-hint" id="build-hint">Toca una ranura para construir.</div>
+
+          <div class="build-sheet">
+            <div class="sheet-tabs" role="tablist" aria-label="Secciones del castillo">
+              <button class="sheet-tab active" data-tab="build" role="tab">CONSTRUIR</button>
+              <button class="sheet-tab" data-tab="upgrade" role="tab">MEJORAR</button>
+              <button class="sheet-tab" data-tab="units" role="tab">UNIDADES</button>
+            </div>
+            <div class="sheet-body" id="build-sheet-body"></div>
+            <button id="btn-battle" class="btn btn-gold build-battle">
+              BATALLA
+              <svg class="icon"><use href="#i-bolt" /></svg>
+            </button>
+          </div>
+        </section>
+
+        <section id="screen-battle" class="screen" data-screen="battle">
+          <div class="hud-top">
+            <div class="combatant player" id="combatant-player">
+              <div class="combatant-head">
+                <span class="combatant-crest">♜</span>
+                <div class="combatant-id">
+                  <b id="player-name">TÚ</b>
+                  <span id="player-trophies"><svg class="icon"><use href="#i-trophy" /></svg> 0</span>
+                </div>
+                <strong class="combatant-hp" id="player-hp">100%</strong>
+              </div>
+              <div class="health-track"><i id="player-health-bar"></i></div>
+            </div>
+            <div class="vs-mark">VS</div>
+            <div class="combatant enemy" id="combatant-enemy">
+              <div class="combatant-head">
+                <strong class="combatant-hp" id="enemy-hp">100%</strong>
+                <div class="combatant-id">
+                  <b id="enemy-name">RIVAL</b>
+                  <span id="enemy-trophies"><svg class="icon"><use href="#i-trophy" /></svg> 0</span>
+                </div>
+                <span class="combatant-crest">♜</span>
+              </div>
+              <div class="health-track"><i id="enemy-health-bar"></i></div>
+            </div>
+          </div>
+
+          <div class="unit-row player" id="unit-row-player"></div>
+          <div class="unit-row enemy" id="unit-row-enemy"></div>
+
+          <div class="battle-top-center">
+            <div class="timer" id="battle-timer">1:30</div>
+            <div class="wind-pill" id="wind-pill" title="Viento">
+              <span class="wind-arrow" id="wind-arrow">→</span>
+              <b id="wind-value">0</b>
+            </div>
+          </div>
+
+          <div class="aim-dock">
+            <div class="aim-readout">
+              <div class="aim-stat"><span>POTENCIA</span><b id="aim-power">65%</b></div>
+              <div class="aim-stat"><span>ÁNGULO</span><b id="aim-angle">45°</b></div>
+            </div>
+            <div class="battle-controls">
+              <button class="icon-btn" id="btn-pause" aria-label="Pausa">
+                <svg class="icon"><use href="#i-pause" /></svg>
+              </button>
+              <button class="icon-btn speed-btn" id="btn-speed" aria-label="Velocidad">×1</button>
+              <button class="fire-btn" id="btn-fire" aria-label="Disparar">
+                <span class="fire-glow"></span>
+                <svg class="icon"><use href="#i-fire" /></svg>
+                <b>DISPARAR</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="battle-hint" id="battle-hint">Arrastra para apuntar · Suelta para disparar</div>
+          <div class="announce" id="announce" aria-live="polite"></div>
+        </section>
+
+        <section id="screen-result" class="screen" data-screen="result">
+          <div class="result-card">
+            <p class="result-kicker" id="result-kicker">VICTORIA</p>
+            <h2 id="result-title">CASTILLO DERRIBADO</h2>
+            <div class="result-stars" id="result-stars"></div>
+            <div class="result-rewards" id="result-rewards"></div>
+            <div class="result-stats" id="result-stats"></div>
+            <div class="result-actions">
+              <button id="btn-result-again" class="btn btn-gold">REVANCHA</button>
+              <button id="btn-result-build" class="btn btn-wood">MI CASTILLO</button>
+              <button id="btn-result-home" class="btn btn-ghost">INICIO</button>
+            </div>
+          </div>
+        </section>
+
+        <div id="modal-settings" class="modal" role="dialog" aria-modal="true" aria-label="Ajustes">
+          <div class="modal-card">
+            <header class="modal-head">
+              <h2>AJUSTES</h2>
+              <button class="icon-btn" data-close-modal aria-label="Cerrar">
+                <svg class="icon"><use href="#i-close" /></svg>
+              </button>
+            </header>
+            <div class="settings-rows">
+              <label class="toggle-row">
+                <span><svg class="icon"><use href="#i-sound" /></svg> Sonido</span>
+                <input type="checkbox" id="set-sound" />
+                <i></i>
+              </label>
+              <label class="toggle-row">
+                <span><svg class="icon"><use href="#i-music" /></svg> Música</span>
+                <input type="checkbox" id="set-music" />
+                <i></i>
+              </label>
+              <label class="toggle-row">
+                <span><svg class="icon"><use href="#i-bolt" /></svg> Reducir movimiento</span>
+                <input type="checkbox" id="set-motion" />
+                <i></i>
+              </label>
+              <button id="btn-install-settings" class="btn btn-green hidden">
+                <svg class="icon"><use href="#i-install" /></svg>
+                INSTALAR APP
+              </button>
+              <button id="btn-reset" class="btn btn-danger">BORRAR PROGRESO</button>
+              <p class="license">
+                Micro Siege v0.1 · Juego original inspirado en la fórmula de asedio de castillos.
+                Tipografías Lilita One y Nunito bajo SIL Open Font License. Sin conexión, sin cuentas, sin analítica.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="modal-pause" class="modal" role="dialog" aria-modal="true" aria-label="Pausa">
+          <div class="modal-card pause-card">
+            <h2>EN PAUSA</h2>
+            <p>El viento espera. Tu castillo también.</p>
+            <button id="btn-resume" class="btn btn-gold">SEGUIR</button>
+            <button id="btn-pause-settings" class="btn btn-wood">AJUSTES</button>
+            <button id="btn-quit" class="btn btn-ghost">ABANDONAR</button>
+          </div>
+        </div>
+
+        <div id="modal-ios" class="modal" role="dialog" aria-modal="true" aria-label="Instalar en iOS">
+          <div class="modal-card ios-card">
+            <h2>INSTALAR EN iOS</h2>
+            <p>
+              En Safari, toca <b>Compartir</b> y elige <b>Añadir a pantalla de inicio</b>.
+              Se abrirá a pantalla completa y funcionará sin conexión.
+            </p>
+            <button class="btn btn-gold" data-close-modal>ENTENDIDO</button>
+          </div>
+        </div>
+
+        <div id="rotate" aria-hidden="true">
+          <div class="rotate-card">
+            <svg class="icon rotate-icon"><use href="#i-rotate" /></svg>
+            <h2>GIRA EL MÓVIL</h2>
+            <p>Micro Siege se juega en horizontal. Así caben los dos castillos y el cañón.</p>
+          </div>
+        </div>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      </div>
+
+      <div id="boot">
+        <div class="boot-mark">♜</div>
+        <div class="boot-title">MICRO SIEGE</div>
+        <div class="boot-bar"><i></i></div>
+      </div>
+    </main>
+
+  </body>
+</html>
